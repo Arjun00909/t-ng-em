@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự Bất Ngờ</title>
+    <style>
+        :root {
+            --sun-yellow: #f1c40f;
+            --rose-petal: #e5989b;
+            --earth-brown: #6d4c41;
+            --obsidian-green: #01160f;
+            --deep-emerald: #042f24;
+            --crimson-rose: #4a0404;
+            --velvet-red: #800000;
+            --cream-white: #fffcf2;
+            --diamond-blue: #b9f2ff;
+            --silver: #c0c0c0;
+            /* Planetary Colors */
+            --jupiter-color: #7b2cbf;
+            --mercury-color: #f39c12;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Times New Roman', Times, serif;
+            background: #000;
+            color: var(--cream-white);
+            overflow: hidden;
+        }
+
+        .main-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px;
+            box-sizing: border-box;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.05);
+        }
+
+        /* --- BACKGROUND THEMES --- */
+        .bg-warm { background: linear-gradient(135deg, var(--sun-yellow), var(--rose-petal), var(--earth-brown)); }
+        .bg-dark-emerald { background: linear-gradient(145deg, var(--obsidian-green) 0%, var(--deep-emerald) 70%, #4a4100 100%); }
+        .bg-romantic { background: linear-gradient(135deg, var(--crimson-rose) 0%, var(--velvet-red) 60%, var(--rose-petal) 100%); }
+
+        /* --- GLASS BOX --- */
+        .glass-box {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 3.5rem 2rem;
+            max-width: 900px;
+            width: 95%;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .scroll-area {
+            text-align: left;
+            line-height: 2;
+            max-height: 68vh;
+            overflow-y: auto;
+            padding-right: 25px;
+        }
+
+        .scroll-area::-webkit-scrollbar { width: 4px; }
+        .scroll-area::-webkit-scrollbar-thumb { background: var(--sun-yellow); border-radius: 10px; }
+
+        /* --- TYPOGRAPHY --- */
+        h1 { font-size: 2.2rem; font-weight: 300; margin-bottom: 2rem; color: #fff; line-height: 1.4; }
+        h3 { color: var(--rose-petal); border-bottom: 1px solid rgba(229, 152, 155, 0.3); padding-bottom: 8px; margin-top: 35px; text-transform: uppercase; font-size: 1.1rem; }
+        
+        .matrix-title-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .planet {
+            font-size: 3.5rem;
+            position: absolute;
+            opacity: 0.8;
+            animation: pulse 4s infinite alternate;
+        }
+        .planet.jupiter { color: var(--jupiter-color); left: 15%; text-shadow: 0 0 15px var(--jupiter-color); }
+        .planet.mercury { color: var(--mercury-color); right: 15%; text-shadow: 0 0 15px var(--mercury-color); }
+
+        .matrix-item {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 15px 0;
+            padding: 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-left: 5px solid var(--sun-yellow);
+            text-align: left;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        .matrix-item:hover { background: rgba(255, 255, 255, 0.12); transform: translateX(10px); }
+
+        ul { list-style: none; padding: 0; }
+        li { margin-bottom: 22px; padding-left: 15px; border-left: 2px solid var(--sun-yellow); }
+        li strong { color: var(--sun-yellow); display: block; font-size: 1.1rem; margin-bottom: 5px; }
+
+        /* --- RULES & DECORATIONS --- */
+        .rule-card {
+            padding: 25px;
+            border-radius: 20px;
+            margin: 35px 0;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.6;
+            text-transform: uppercase;
+        }
+        .diamond { border: 2px solid var(--diamond-blue); background: rgba(185, 242, 255, 0.1); color: var(--diamond-blue); }
+        .golden { border: 2px solid var(--sun-yellow); background: rgba(241, 196, 15, 0.1); color: var(--sun-yellow); }
+        .silver { border: 2px solid var(--silver); background: rgba(192, 192, 192, 0.1); color: var(--silver); }
+
+        .decorative-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            background: var(--earth-brown);
+            color: var(--sun-yellow);
+            padding: 18px 60px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.4s;
+            align-self: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            z-index: 20;
+        }
+        .btn:hover { background: var(--sun-yellow); color: var(--earth-brown); transform: translateY(-3px); }
+
+        .tags { color: var(--sun-yellow); letter-spacing: 4px; text-align: center; margin: 25px 0; font-size: 0.9rem; }
+
+        /* --- KEYFRAMES --- */
+        @keyframes pulse { from { opacity: 0.6; transform: scale(1); } to { opacity: 1; transform: scale(1.05); } }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        
+        <div id="screen1" class="screen bg-warm">
+            <div class="glass-box">
+                <h1>Em có sẵn lòng bước vào cuộc đời anh không?</h1>
+                <button class="btn" onclick="nav('screen1', 'screen2')">Bước Vào</button>
+            </div>
+        </div>
+
+        <div id="screen2" class="screen bg-warm hidden">
+            <div class="glass-box">
+                <div class="matrix-title-wrapper">
+                    <div class="planet jupiter">&#9795;</div> <h1 style="color: var(--sun-yellow); margin: 0;">Ma Trận</h1>
+                    <div class="planet mercury">&#9791;</div> </div>
+                <div class="matrix-item" onclick="nav('screen2', 'screen3')">1. Anh là ai?</div>
+                <div class="matrix-item" onclick="nav('screen2', 'screen4')">2. Cách anh nhìn nhận mối quan hệ với em</div>
+                </div>
+        </div>
+
+        <div id="screen3" class="screen bg-dark-emerald hidden">
+            <div class="glass-box">
+                <div class="scroll-area">
+                    <h2 style="color: var(--sun-yellow); text-align: center; font-style: italic;">Anh là một người đàn ông mang những vết sẹo.</h2>
+                    <p>Anh cảm thấy bản thân mình chưa đủ tốt, nhưng sự hiện diện của em đã mang lại cho anh sự bình yên và nguồn động lực mới.</p>
+                    
+                    <div class="tags">Anh là Sao Thủy • Anh là Xử Nữ • Anh là Mặt Trăng • Anh là Cự Giải</div>
+
+                    <p>Anh đã nếm trải những lần "tự sát" trong tâm hồn, anh đã thấy sự cô độc. Anh đã thấy sự cay đắng, tàn nhẫn... Mọi người gọi anh là kẻ vô dụng, khờ khạo, ngây ngô. Chính cha mẹ đã khiến anh tin rằng mình là một đứa trẻ lỗi lầm</p>
+                    <p>và trên vai đứa trẻ ấy là trách nhiệm phải cứu lấy mẹ mình khỏi sự bạo tàn</p>
+                    <p>Tệ nhất là, chính mẹ anh cũng đã mất đi hy vọng vào anh.</p>
+                    <p>Anh đã thấy cái chết, sự cô lập, sự tàn nhẫn nhưng anh chọn yêu thương, quan tâm và trưởng thành bởi vì vào ngày 20 tháng 7 năm 2024, anh đã thực sự được tái sinh... Em có thể gọi đó là Chúa hay tâm trí anh, nhưng anh đã thực sự sống...</p>
+                    <p>Mục tiêu của anh rất đơn giản, anh sẽ giúp đỡ những người giống như mình rồi tan biến. Anh không sợ cái chết.. đối với anh, anh sinh ra là có mục đích và một ngày nào đó anh sẽ rời bỏ thế gian này.....</p>
+                    <p>Anh trung thành, biết quan tâm, mạnh mẽ, thông minh .... đó là những gì mọi người gọi anh bây giờ nhưng thực lòng anh là cậu bé đã phó thác linh hồn cho Chúa vào ngày 20 tháng 7 năm 2024.... Anh là cậu bé từng không có gì trong tay</p>
+                    <p>Anh không biết mình sẽ ở bên em bao lâu.... nhưng anh sẽ là người đàn ông mà em mãi mãi khắc ghi và em sẽ là người con gái mà anh mãi mãi nhớ về</p>
+                </div>
+                <button class="btn" style="background: var(--deep-emerald);" onclick="nav('screen3', 'screen2')">Quay lại Ma Trận</button>
+            </div>
+        </div>
+
+        <div id="screen4" class="screen bg-romantic hidden">
+            <div class="decorative-overlay" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTIwIDIwaDIwdjIwSDIWMjB6TTAgMjBoMjB2MjBIMFYyMHoyMCAwaDIwdjIwSDIwVjB6Ii8+PC9nPjwvZz48L3N2Zz4=');"></div>
+            <div class="glass-box">
+                <div class="scroll-area">
+                    <h2 style="text-align: center; font-style: italic; color: #fff;">Cách anh nhìn nhận mối quan hệ với em</h2>
+                    
+                    <h3>Những điều anh sẵn lòng thực hiện:</h3>
+                    <ul>
+                        <li><strong>Sự điềm tĩnh</strong> Anh sẽ nói chuyện một cách bình tĩnh khi có bất đồng</li>
+                        <li><strong>Giảm thiểu suy nghĩ tiêu cực</strong> Anh sẽ cố gắng giảm bớt việc suy nghĩ quá mức trong cuộc sống và mối quan hệ</li>
+                        <li><strong>Không cô lập</strong> Anh sẽ không bao giờ bỏ rơi hay im lặng cắt đứt liên lạc (ghost) với em</li>
+                        <li><strong>Chậm rãi</strong> Anh sẵn sàng cho một mối quan hệ chậm rãi, ở một nhịp độ mà cả hai chúng ta đều cảm thấy hạnh phúc</li>
+                        <li><strong>Bảo vệ</strong> Anh sẽ luôn bảo vệ em</li>
+                        <li><strong>Không cái tôi</strong> Anh sẽ không bao giờ cố gắng áp đặt hay lấn át em</li>
+                        <li><strong>Sự trưởng thành</strong> Anh hứa sẽ cố gắng hoàn thiện bản thân vì những điều tốt đẹp nhất</li>
+                    </ul>
+
+                    <h3>Những điều anh mong muốn ở em:</h3>
+                    <ul>
+                        <li><strong>Lắng nghe</strong> Xin hãy lắng nghe anh một cách trọn vẹn</li>
+                        <li><strong>Không đoán tâm trí</strong> Anh là con người, anh không thể đọc được suy nghĩ của em, vì vậy xin hãy nói mọi chuyện một cách rõ ràng</li>
+                        <li><strong>Giải quyết vấn đề ngay lập tức</strong> Chúng ta sẽ không giữ những vướng mắc trong lòng quá lâu, chúng ta sẽ nói ra ngay lập tức và cùng nhau tìm cách giải quyết.</li>
+                        <li><strong>Không cạnh tranh</strong> Trong tình yêu, chúng ta không chiến đấu để giành phần hơn, chúng ta cùng nhau lớn mạnh... Bởi vì cả hai chúng ta đều cần sự bình yên, một nơi an toàn để thở... Anh không muốn sự cạnh tranh tồn tại giữa chúng ta</li>
+                    </ul>
+
+                    <div class="rule-card diamond">
+                        QUY TẮC KIM CƯƠNG: KHI CHÚNG TA CẢM THẤY XUNG ĐỘT XẢY RA, CHÚNG TA SẼ GIẢM TỐC ĐỘ CUỘC TRÒ CHUYỆN XUỐNG
+                    </div>
+
+                    <h3 style="color: var(--sun-yellow);">QUY TẮC VÀNG</h3>
+                    <ul>
+                        <li><strong>BÌNH ĐẲNG</strong> Không ai đứng trên ai, cả hai chúng ta đều bình đẳng</li>
+                        <li><strong>TỰ DO</strong> Cả hai đều có quyền tự do trong suy nghĩ và hành động.. chúng ta sẽ không kiểm soát ý chí của nhau. Ngoại trừ THIỆN CHÍ: NẾU CHÚNG TA THẤY MỘT TRONG HAI ĐANG LÀM ĐIỀU XẤU CÓ THỂ GÂY HẠI CHO BẢN THÂN HAY BẤT KỲ AI, CHÚNG TA SẼ ĐẢM BẢO MỌI THỨ ĐƯỢC ỔN ĐỊNH TRỞ LẠI</li>
+                        <li><strong>CỘNG ĐỒNG (KHÔNG VỊ KỶ)</strong> Không có sự so sánh hay cạnh tranh, chúng ta là một.. chúng ta không chạy theo những lợi ích ích kỷ xấu xa mà thực tế là một Mối Quan Hệ Cộng Đồng (Cùng nhau sẻ chia)</li>
+                        <li><strong>TÌNH THÂN ÁI</strong> Cả hai chúng ta đều hỗ trợ tinh thần và lắng nghe lẫn nhau</li>
+                    </ul>
+
+                    <div class="rule-card silver">
+                        QUY TẮC BẠC: Trung thành, Quan tâm, Giải quyết vấn đề ngay lập tức, Yêu thương
+                    </div>
+                </div>
+                <button class="btn" style="background: var(--velvet-red);" onclick="nav('screen4', 'screen2')">Quay lại Ma Trận</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function nav(curr, next) {
+            document.getElementById(curr).classList.add('hidden');
+            document.getElementById(next).classList.remove('hidden');
+        }
+    </script>
+
+</body>
+</html>
